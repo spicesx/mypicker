@@ -3,44 +3,36 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
     <title>Terms of Use - MyPicker</title>
-    <meta name="theme-color" content="#120f1f">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=2">
     <link rel="icon" href="mypicker_icon.png" type="image/png">
 </head>
 
-<body>
-    <div class="lights" aria-hidden="true">
-        <span class="light light-a"></span>
-        <span class="light light-b"></span>
-        <span class="light light-c"></span>
-    </div>
+<body class="document-page">
+    <canvas id="glow" class="glow" aria-hidden="true"></canvas>
 
     <main class="container document-container">
-        <a href="index.html" class="back-link" aria-label="Back to MyPicker">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-            MyPicker
-        </a>
+        <div class="document-header">
+            <a href="index.html" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+                MyPicker
+            </a>
+        </div>
 
         <article class="document" id="document" data-source="terms.md">
             <h1>Terms of Use</h1>
             <p>Loading&hellip; If this text stays, read the <a href="terms.md">plain-text version</a>.</p>
         </article>
-
-        <footer>
-            <a href="privacy.html">Privacy Policy</a>
-            <span aria-hidden="true">&bull;</span>
-            <a href="terms.html">Terms of Use</a>
-            <span aria-hidden="true">&bull;</span>
-            <a href="mailto:spicesx1@gmail.com?subject=MyPicker">Contact Support</a>
-        </footer>
     </main>
 
     <script src="marked.min.js"></script>
-    <script src="document.js"></script>
+    <script src="document.js?v=2"></script>
+    <script src="glow.js?v=2"></script>
 </body>
 
 </html>
