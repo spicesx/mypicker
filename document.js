@@ -19,7 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
         target.classList.add('is-arriving');
         target.innerHTML = html;
         card.style.height = 'auto';
-        const to = card.getBoundingClientRect().height;
+        const natural = card.getBoundingClientRect().height;
+        // Grow only as far as the bottom of the screen, so the whole movement is visible; the rest of the card is
+        // below the screen and takes its full height afterwards without anyone seeing a jump.
+        const screenBottom = window.innerHeight - card.getBoundingClientRect().top + 24;
+        const to = Math.min(natural, Math.max(from, screenBottom));
         card.style.height = from + 'px';
         void card.offsetHeight;
         card.classList.add('is-growing');

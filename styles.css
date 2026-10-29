@@ -75,6 +75,30 @@ body {
     mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.4) 45%, rgba(0, 0, 0, 0.3) 100%);
 }
 
+/* The first page of a visit fades the light in; later pages show it at once, already matching. */
+canvas.glow {
+    opacity: 0;
+}
+
+canvas.glow.is-ready {
+    opacity: 1;
+    transition: opacity 0.9s ease;
+}
+
+canvas.glow.is-continuing,
+canvas.glow.fallback {
+    opacity: 1;
+}
+
+/* Moving between the home page and the policies crossfades instead of cutting. */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-group(root) {
+    animation-duration: 0.35s;
+}
+
 /* Without WebGL, a still glow in the same colors. */
 .glow.fallback {
     background:
@@ -182,11 +206,11 @@ body.document-page {
 }
 
 .container.is-growing {
-    transition: height 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: height 0.6s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .document {
-    transition: opacity 0.6s ease 0.15s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+    transition: opacity 0.5s ease 0.1s, transform 0.6s cubic-bezier(0.32, 0.72, 0, 1) 0.1s;
 }
 
 .document.is-arriving {
@@ -290,6 +314,16 @@ body.document-page {
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @view-transition {
+        navigation: none;
+    }
+
+    canvas.glow.is-ready {
+        transition: none;
+    }
 }
 
 @media (max-width: 768px) {

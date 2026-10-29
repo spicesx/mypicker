@@ -1,8 +1,11 @@
 // The app's Picker lights, ported from its Metal shader (brandColor in ColorShaders.metal).
 // Runs at 30 fps only while the page is visible; Reduce Motion shows one still frame.
-document.addEventListener('DOMContentLoaded', () => {
+// It runs as soon as the script loads (at the end of the page), so the first frame is drawn before the page
+// first appears, and it continues from where the previous page left off, so changing pages never changes the light.
+(() => {
     const canvas = document.getElementById('glow');
     if (!canvas) return;
+    const storageKey = 'mypicker-glow';
     const gl = canvas.getContext('webgl2', { alpha: false, antialias: false, premultipliedAlpha: false });
     if (!gl) { canvas.classList.add('fallback'); return; }
     // Wide-gamut screens get the same Display P3 output as the app.
@@ -112,6 +115,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     // A pause keeps the current frame and resumes from it, never jumping ahead through hidden time.
     let elapsed = 0, last = null, frame = null;
+    let continuing = false;
+    try {
+        const saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+        // Within this visit, pick up the light where the last page had it, plus the time spent loading this one.
+        if (saved && typeof saved.time === 'number' && Date.now() - saved.at < 30000) {
+            elapsed = saved.time + (reduceMotion.matches ? 0 : (Date.now() - saved.at) / 1000);
+            continuing = true;
+        }
+    } catch (error) { /* Storage can be unavailable; the light then starts fresh. */ }
+    function save() {
+        try { sessionStorage.setItem(storageKey, JSON.stringify({ time: elapsed, at: Date.now() })); } catch (error) { }
+    }
     function tick(now) {
         frame = requestAnimationFrame(tick);
         if (last === null) { last = now; draw(elapsed); return; }
@@ -131,8 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (!run) draw(elapsed);
     }
-    document.addEventListener('visibilitychange', update);
+    document.addEventListener('visibilitychange', () => { save(); update(); });
+    window.addEventListener('pagehide', save);
     reduceMotion.addEventListener('change', update);
     window.addEventListener('resize', () => draw(elapsed));
     update();
-});
+    // On the first page of a visit the light fades in from black; later pages already match the last one.
+    if (!continuing) getComputedStyle(canvas).opacity; // Start the fade from the hidden state.
+    canvas.classList.add(continuing ? 'is-continuing' : 'is-ready');
+})();
